@@ -35,7 +35,7 @@ void ErhcetuaVisualizer::paint(juce::Graphics& g)
     g.setColour(panelOutline);
     g.drawRoundedRectangle(area.reduced(0.75f), 20.0f, 1.0f);
 
-    auto content = area.reduced(16.0f);
+    auto content = area.reduced(12.0f);
     auto heading = content.removeFromTop(26.0f);
     auto stages = content.removeFromTop(52.0f);
     auto footer = content.removeFromBottom(40.0f);
@@ -119,11 +119,12 @@ void ErhcetuaVisualizer::drawStepField(juce::Graphics& g, juce::Rectangle<float>
     if (data.stepCount <= 0 || data.lanes.empty())
         return;
 
-    auto content = area.reduced(12.0f);
+    auto content = area.reduced(8.0f);
     auto titleRow = content.removeFromTop(18.0f);
-    auto modArea = content.removeFromBottom(72.0f);
-    auto grid = content.reduced(0.0f, 2.0f);
-    const auto laneGridOriginX = grid.getX() + 44.0f;
+    auto modArea = content.removeFromBottom(66.0f);
+    auto grid = content.reduced(0.0f, 1.0f);
+    const auto labelWidth = 36.0f;
+    const auto laneGridOriginX = grid.getX() + labelWidth;
     const auto columnAreaTop = grid.getY();
 
     g.setColour(textBright);
@@ -133,9 +134,10 @@ void ErhcetuaVisualizer::drawStepField(juce::Graphics& g, juce::Rectangle<float>
     g.setFont(uiFont("Menlo", 10.0f, juce::Font::plain));
     g.drawText(data.presetName + "  /  " + data.resetModeName, titleRow.toNearestInt(), juce::Justification::centredRight);
 
-    const auto stepGap = 5.0f;
-    const auto columnWidth = (grid.getWidth() - stepGap * (float) (data.stepCount - 1)) / (float) data.stepCount;
-    const auto laneGap = 6.0f;
+    const auto stepGap = 2.0f;
+    const auto sequencerWidth = grid.getWidth() - labelWidth;
+    const auto columnWidth = (sequencerWidth - stepGap * (float) (data.stepCount - 1)) / (float) data.stepCount;
+    const auto laneGap = 4.0f;
     const auto laneHeight = (grid.getHeight() - laneGap * (float) (data.lanes.size() - 1)) / (float) data.lanes.size();
 
     for (auto laneIndex = 0; laneIndex < (int) data.lanes.size(); ++laneIndex)
@@ -144,7 +146,7 @@ void ErhcetuaVisualizer::drawStepField(juce::Graphics& g, juce::Rectangle<float>
         if (laneIndex < (int) data.lanes.size() - 1)
             grid.removeFromTop(laneGap);
 
-        auto labelArea = row.removeFromLeft(44.0f);
+        auto labelArea = row.removeFromLeft(labelWidth);
         auto laneGrid = row;
 
         g.setColour(textDim);
@@ -185,7 +187,7 @@ void ErhcetuaVisualizer::drawStepField(juce::Graphics& g, juce::Rectangle<float>
             {
                 const auto markerHeight = 2.0f;
                 const auto markerGap = 1.0f;
-                const auto markerWidth = juce::jmin(3.0f, (cell.getWidth() - markerGap * (float) (step.repeats - 1)) / (float) step.repeats);
+                const auto markerWidth = juce::jmin(2.0f, (cell.getWidth() - markerGap * (float) (step.repeats - 1)) / (float) step.repeats);
                 for (auto repeat = 0; repeat < step.repeats; ++repeat)
                 {
                     const auto markerX = cell.getX() + repeat * (markerWidth + markerGap);
@@ -195,7 +197,7 @@ void ErhcetuaVisualizer::drawStepField(juce::Graphics& g, juce::Rectangle<float>
         }
     }
 
-    auto labels = modArea.removeFromLeft(44.0f);
+    auto labels = modArea.removeFromLeft(labelWidth);
     auto modGrid = modArea;
     const auto modGap = 4.0f;
     const auto modHeight = (modGrid.getHeight() - modGap * (float) (data.modulationRows.size() - 1)) / (float) data.modulationRows.size();
@@ -237,7 +239,7 @@ void ErhcetuaVisualizer::drawStepField(juce::Graphics& g, juce::Rectangle<float>
     for (auto stepIndex = 0; stepIndex < data.stepCount; ++stepIndex)
     {
         const auto x = laneGridOriginX + (columnWidth + stepGap) * (float) stepIndex;
-        auto label = juce::Rectangle<float>(x, columnAreaTop + area.getHeight() - 24.0f, columnWidth, 10.0f);
+        auto label = juce::Rectangle<float>(x, columnAreaTop + area.getHeight() - 20.0f, columnWidth, 10.0f);
         g.setColour(textDim.withAlpha(0.7f));
         g.setFont(uiFont("Menlo", 8.5f, juce::Font::plain));
         g.drawText(juce::String(stepIndex + 1), label.toNearestInt(), juce::Justification::centred);
@@ -351,8 +353,8 @@ void ErhcetuaAudioProcessorEditor::paint(juce::Graphics& g)
     g.fillAll();
 
     auto bounds = getLocalBounds().toFloat().reduced(16.0f);
-    auto left = bounds.removeFromLeft(304.0f);
-    auto topRail = bounds.removeFromTop(92.0f);
+    auto left = bounds.removeFromLeft(236.0f);
+    auto topRail = bounds.removeFromTop(88.0f);
 
     g.setColour(controlPanel);
     g.fillRoundedRectangle(left, 18.0f);
@@ -365,54 +367,88 @@ void ErhcetuaAudioProcessorEditor::paint(juce::Graphics& g)
 void ErhcetuaAudioProcessorEditor::resized()
 {
     auto area = getLocalBounds().reduced(16);
-    auto controls = area.removeFromLeft(304);
-    auto topRail = area.removeFromTop(92);
-    visualizer.setBounds(area.reduced(4, 0));
+    auto controls = area.removeFromLeft(236);
+    auto topRail = area.removeFromTop(88);
+    visualizer.setBounds(area.reduced(2, 0));
 
-    auto placeTopCombo = [](juce::Rectangle<int>& row, juce::Label& label, juce::ComboBox& box)
+    auto railContent = topRail.reduced(8, 8);
+    const auto gap = 8;
+    const auto availableWidth = railContent.getWidth() - gap * 4;
+    const auto presetWidth = 180;
+    const auto grammarWidth = 150;
+    const auto resetWidth = 130;
+    const auto scaleWidth = 100;
+    const auto ruleWidth = availableWidth - presetWidth - grammarWidth - resetWidth - scaleWidth;
+
+    auto placeTopCombo = [](juce::Rectangle<int> bounds, juce::Label& label, juce::ComboBox& box)
     {
-        auto col = row.removeFromLeft(row.getWidth() / 5).reduced(6, 8);
-        label.setBounds(col.removeFromTop(12));
-        box.setBounds(col.removeFromTop(22));
+        label.setBounds(bounds.removeFromTop(12));
+        box.setBounds(bounds.removeFromTop(24));
     };
 
-    placeTopCombo(topRail, presetLabel, presetBox);
-    placeTopCombo(topRail, grammarLabel, grammarBox);
-    placeTopCombo(topRail, resetModeLabel, resetModeBox);
-    placeTopCombo(topRail, scaleLabel, scaleBox);
-    placeTopCombo(topRail, ruleLabel, ruleBox);
+    auto presetArea = railContent.removeFromLeft(presetWidth);
+    placeTopCombo(presetArea, presetLabel, presetBox);
+    railContent.removeFromLeft(gap);
 
-    auto placeControl = [](juce::Rectangle<int>& source, juce::Label& label, juce::Slider& slider)
+    auto grammarArea = railContent.removeFromLeft(grammarWidth);
+    placeTopCombo(grammarArea, grammarLabel, grammarBox);
+    railContent.removeFromLeft(gap);
+
+    auto resetArea = railContent.removeFromLeft(resetWidth);
+    placeTopCombo(resetArea, resetModeLabel, resetModeBox);
+    railContent.removeFromLeft(gap);
+
+    auto scaleArea = railContent.removeFromLeft(scaleWidth);
+    placeTopCombo(scaleArea, scaleLabel, scaleBox);
+    railContent.removeFromLeft(gap);
+
+    placeTopCombo(railContent.withWidth(ruleWidth), ruleLabel, ruleBox);
+
+    auto layoutControlGroup = [](juce::Rectangle<int> bounds,
+                                 std::initializer_list<std::pair<juce::Label*, juce::Slider*>> controlsToPlace)
     {
-        auto row = source.removeFromTop(38).reduced(8, 2);
-        label.setBounds(row.removeFromTop(12));
-        slider.setBounds(row);
+        const auto count = (int) controlsToPlace.size();
+        const auto rowHeight = count > 0 ? bounds.getHeight() / count : 0;
+
+        for (auto [label, slider] : controlsToPlace)
+        {
+            auto row = bounds.removeFromTop(rowHeight).reduced(6, 1);
+            label->setBounds(row.removeFromTop(11));
+            slider->setBounds(row.removeFromTop(22));
+        }
     };
 
-    auto macroGroup = controls.removeFromTop(274);
+    auto macroGroup = controls.removeFromTop((controls.getHeight() - 10) / 2);
+    controls.removeFromTop(10);
     auto utilityGroup = controls;
 
-    placeControl(macroGroup, densityLabel, densitySlider);
-    placeControl(macroGroup, mutationLabel, mutationSlider);
-    placeControl(macroGroup, ratchetLabel, ratchetSlider);
-    placeControl(macroGroup, flutterLabel, flutterSlider);
-    placeControl(macroGroup, swingLabel, swingSlider);
-    placeControl(macroGroup, driftLabel, driftSlider);
-    placeControl(macroGroup, probabilityLabel, probabilitySlider);
+    layoutControlGroup(macroGroup,
+                       {
+                           { &densityLabel, &densitySlider },
+                           { &mutationLabel, &mutationSlider },
+                           { &ratchetLabel, &ratchetSlider },
+                           { &flutterLabel, &flutterSlider },
+                           { &swingLabel, &swingSlider },
+                           { &driftLabel, &driftSlider },
+                           { &probabilityLabel, &probabilitySlider }
+                       });
 
-    placeControl(utilityGroup, rotationLabel, rotationSlider);
-    placeControl(utilityGroup, gateSkewLabel, gateSkewSlider);
-    placeControl(utilityGroup, pitchSpreadLabel, pitchSpreadSlider);
-    placeControl(utilityGroup, rootNoteLabel, rootNoteSlider);
-    placeControl(utilityGroup, octaveSpanLabel, octaveSpanSlider);
-    placeControl(utilityGroup, channelLabel, channelSlider);
-    placeControl(utilityGroup, gateLabel, gateSlider);
+    layoutControlGroup(utilityGroup,
+                       {
+                           { &rotationLabel, &rotationSlider },
+                           { &gateSkewLabel, &gateSkewSlider },
+                           { &pitchSpreadLabel, &pitchSpreadSlider },
+                           { &rootNoteLabel, &rootNoteSlider },
+                           { &octaveSpanLabel, &octaveSpanSlider },
+                           { &channelLabel, &channelSlider },
+                           { &gateLabel, &gateSlider }
+                       });
 }
 
 void ErhcetuaAudioProcessorEditor::configureSlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::LinearHorizontal);
-    slider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 18);
+    slider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 42, 18);
     slider.setColour(juce::Slider::trackColourId, accent);
     slider.setColour(juce::Slider::thumbColourId, textBright);
     slider.setColour(juce::Slider::backgroundColourId, juce::Colour::fromRGBA(255, 255, 255, 12));
