@@ -2,7 +2,7 @@
 
 GP6 is a JUCE-created MIDI FX plugin for Logic Pro loosely based on the Comdyna GP6 analogue computer.
 
-!()[https://github.com/maetyu-d/GP6/blob/main/Screenshot%202026-03-09%20at%2015.38.47.png]
+![](https://github.com/maetyu-d/GP6/blob/main/Screenshot%202026-03-09%20at%2015.38.47.png)
 
 ## Features
 
