@@ -10,10 +10,6 @@ The included AU bundle is packaged as GP6-AU.component.zip for direct installati
 ## Features
 
 - AU MIDI FX target for Logic Pro, with `VST3` and `Standalone` targets also generated for development.
-- Reset-driven rhythm generation with grammar, mutation, flutter, rotation, drift, and conditional rules.
-- Multiple internal lanes with per-step modulation rows for velocity, gate, octave, and reset behavior.
-- Scale-aware pitch generation and legato mode for connected phrases.
-- Compact visual editor that exposes the live algorithm stages and step field directly.
 - Preset bank with varied generative starting points.
 
 ## Build
@@ -30,4 +26,4 @@ For Logic Pro, use the generated AU target. The plugin is configured as a MIDI e
 ## Notes
 
 - The processor depends on host transport and tempo information for sample-accurate scheduling.
-- Presets are designed as performance starting points. You can load a preset variation, then retune the output behavior to match any drum rack or sampler.
+- Presets are designed as performance starting points. You can load a preset variation, then retune the output behavior to match any synth, drum rack or sampler.
