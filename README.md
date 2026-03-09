@@ -1,6 +1,8 @@
 # GP6
 
-GP6 is a JUCE-created MIDI FX plugin for Logic Pro loosely based on the Comdyna GP6 analogue computer.
+GP-6 is a JUCE-built Audio Unit inspired by the COMDYNA GP-6 analog computer, reimagined as an expanded software instrument with a patchable front panel, live cable routing, and a larger simulated signal network than the original hardware. It combines analog-computing ideas like integrators, summers, multipliers, comparators, overload behavior, and reset logic with a performance-oriented patch view that provides twelve interactive cable routes, animated patch states, and presets that make use of the expanded architecture. 
+
+The included AU bundle is packaged as GP6-AU.component.zip for direct installation on macOS.
 
 ![](https://github.com/maetyu-d/GP6/blob/main/Screenshot%202026-03-09%20at%2015.38.47.png)
 ![](https://github.com/maetyu-d/GP6/blob/main/Screenshot%202026-03-09%20at%2015.38.31.png)
