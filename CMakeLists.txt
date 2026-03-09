@@ -84,3 +84,40 @@ target_link_libraries(erhcetua
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)
+
+juce_add_plugin(GP6
+    COMPANY_NAME "md"
+    BUNDLE_ID "com.md.gp6"
+    IS_SYNTH FALSE
+    IS_MIDI_EFFECT TRUE
+    NEEDS_MIDI_INPUT TRUE
+    NEEDS_MIDI_OUTPUT TRUE
+    EDITOR_WANTS_KEYBOARD_FOCUS FALSE
+    COPY_PLUGIN_AFTER_BUILD FALSE
+    PLUGIN_MANUFACTURER_CODE MdFm
+    PLUGIN_CODE Gp06
+    FORMATS AU VST3 Standalone
+    PRODUCT_NAME "GP-6")
+
+target_sources(GP6
+    PRIVATE
+        Source/Gp6PluginEditor.cpp
+        Source/Gp6PluginEditor.h
+        Source/Gp6PluginProcessor.cpp
+        Source/Gp6PluginProcessor.h
+        Source/Gp6PatchEngine.h)
+
+target_compile_definitions(GP6
+    PUBLIC
+        JUCE_WEB_BROWSER=0
+        JUCE_USE_CURL=0
+        JUCE_VST3_CAN_REPLACE_VST2=0)
+
+target_link_libraries(GP6
+    PRIVATE
+        juce::juce_audio_utils
+        juce::juce_dsp
+    PUBLIC
+        juce::juce_recommended_config_flags
+        juce::juce_recommended_lto_flags
+        juce::juce_recommended_warning_flags)

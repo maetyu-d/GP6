@@ -1,6 +1,10 @@
-# FELA
+# FELA / erhcetua / GP-6
 
 `FELA` is a JUCE MIDI FX plugin for Logic Pro that generates mathematically shaped bell cycles, cross-rhythms, and pulse variations inspired by several West African rhythmic families. It outputs MIDI notes only and renders the pattern in a custom visual orbit/timeline display.
+
+`erhcetua` is a second JUCE MIDI FX plugin in the same project, focused on reset-driven generative grammar and lane mutation.
+
+`GP-6` is a third, separate JUCE MIDI FX plugin based on the workflow and panel logic of the COMDYNA GP-6 analog computer. It interprets integrators, summers, multipliers, repetitive run modes, and overload behaviour as a patchable MIDI sequencer rather than as a strict circuit emulator.
 
 ## Features
 
@@ -21,7 +25,7 @@ cmake -B build -S . -DJUCE_DIR=/absolute/path/to/JUCE
 cmake --build build --config Release
 ```
 
-For Logic Pro, use the generated AU target. The plugin is configured as a MIDI effect (`IS_MIDI_EFFECT TRUE`) so it can be inserted in Logic's MIDI FX slot.
+For Logic Pro, use the generated AU target. All three plugins are configured as MIDI effects (`IS_MIDI_EFFECT TRUE`) so they can be inserted in Logic's MIDI FX slot.
 
 ## Notes
 
